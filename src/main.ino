@@ -46,7 +46,11 @@ long lastUpdateMillis;
 
 void setup() {
   logHandler.addModule(&serialModule);
+  Serial.println();
   Log.info(s+"Initializing "+BOARD_ID);
+  Log.info(s+"Git HASH: "+GIT_HASH);
+  Log.info(s+"Git Tag/Branch: "+GIT_TAG_OR_BRANCH);
+  Log.info(s+"Build timestamp: "+BUILD_TIMESTAMP);
 
   // -------------------------- App Important --------------------------
   pinMode(STATUS_LED_PIN, OUTPUT);

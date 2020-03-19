@@ -4,15 +4,15 @@ Clone this repository, `cd` into it. Connect wires to the Sonoff S20 (I've been 
 
 Run:
 
-    platformio run -t upload
+    platformio run
 
 In case you have multiple USB-to-Serial adapters attached, specify:
 
-    platformio run -t upload --upload-port /dev/cu.usbserial-00202102A 
+    platformio run --upload-port /dev/cu.usbserial-00202102A 
 
 For OTA upload:
 
-    platformio run -t upload --upload-port SonoffS20_1234567.local
+    platformio run -t upload --upload-port <SonoffS20_1234567.local or IP address>
 
 ### Serial Monitor
 
@@ -23,6 +23,16 @@ Debug with:
 or
 
     platformio device monitor --port /dev/cu.usbserial-00202102A
+
+### Debugging build
+
+Do debug on another board
+
+    platformio run -e d1_mini
+
+for faster flashing, upload OTA while still connected via USB for serial output
+
+    platformio run -e d1_mini --upload-port 10.1.1.108    
 
 
 [settings_arduino]: https://github.com/arendst/Tasmota/wiki/Arduino-IDE
