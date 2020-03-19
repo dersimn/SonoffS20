@@ -8,7 +8,7 @@
 // Sonoff
 #define RELAIS_PIN 12
 
-#define STATUS_LED_PIN 13
+#define STATUS_LED_PIN LED_BUILTIN
 
 #define BUTTON_PIN 0
 #define BUTTON_DEBOUNCE 500
