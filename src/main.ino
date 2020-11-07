@@ -23,7 +23,7 @@
 const String s = "";
 const String ESP_ID = upperCaseStr(String(ESP.getChipId(), HEX));
 const String BOARD_ID = s+APP_PREFIX+"_"+ESP_ID;
-const String MQTT_PREFIX = s+APP_PREFIX+"/"+ESP_ID;
+const String MQTT_PREFIX = s+"dersimn/"+APP_PREFIX+"/"+ESP_ID;
 
 WiFiClient        espClient;
 PubSubClient      mqttClient(MQTT_SERVER, 1883, espClient);
