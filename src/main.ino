@@ -209,6 +209,9 @@ void mqttReconnect() {
     doc["ip_address"] = WiFi.localIP().toString();
 
     mqtt.publish(s+MQTT_PREFIX+"/maintenance/info", doc.as<String>(), true);
+
+    // Post current state
+    val_pub();
   } else {
     LogMqtt.error(s+"Connection failed with rc="+mqttClient.state());
     digitalWrite(STATUS_LED_PIN, LOW);
