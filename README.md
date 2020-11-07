@@ -2,16 +2,25 @@
 
 Clone this repository, `cd` into it. Connect wires to the Sonoff S20 (I've been using a [FT2232 breakout board](http://dangerousprototypes.com/docs/FT2232_breakout_board)). Flash using [PlatformIO CLI](https://docs.platformio.org/en/latest/installation.html).  
 
-Run:
+Run
 
     platformio run
 
-In case you have multiple USB-to-Serial adapters attached, specify:
+first to see if everything compiles, first.
 
+To get the Sonoff into programming mode, connect every pin, except 3.3V. Press the button on the PCB and then plug in the 3.3V, hold it for further ≈4s:
+
+[![](docs/connection_ftdi_400.jpeg)](docs/connection_ftdi_2000.jpeg)
+[![](docs/connection_sonoff_400.jpeg)](docs/connection_sonoff_2000.jpeg)
+
+In case you have multiple USB-Serial adapters, or your adapter offers multiple ports:
+
+    platformio device list
     platformio run --upload-port /dev/cu.usbserial-00202102A 
 
-For OTA upload:
+For WiFi OTA upload:
 
+    platformio device list --mdns
     platformio run -t upload --upload-port <SonoffS20_1234567.local or IP address>
 
 ### Serial Monitor
@@ -26,13 +35,11 @@ or
 
 ### Debugging build
 
-Do debug on another board
+Flash on Wemos D1 Mini board for better debugging:
 
     platformio run -e d1_mini
 
-for faster flashing, upload OTA while still connected via USB for serial output
-
-    platformio run -e d1_mini --upload-port 10.1.1.108    
+I recommend to flash debugging firmwares via OTA as well, since it's much faster. You can still connect USB-Serial adapter for debugging monitor output simultaneously.
 
 
 [settings_arduino]: https://github.com/arendst/Tasmota/wiki/Arduino-IDE
