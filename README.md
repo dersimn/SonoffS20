@@ -1,3 +1,23 @@
+## Topics
+
+```
+dersimn/SonoffS20/ABC123/online → true
+
+dersimn/SonoffS20/ABC123/maintenance/info → {
+        "board_id": "SonoffS20_ABC123",
+        "build_hash": "847c24d8f7c80245878a8a73af440e924f363374",
+        "build_tag": "master",
+        "build_timestamp": 1607178964,
+        "ip_address": "10.1.1.216"
+    }
+
+dersimn/SonoffS20/ABC123//onoff → {"val": false}
+dersimn/SonoffS20/ABC123//led → {"val": false}
+dersimn/SonoffS20/ABC123//config → {"button-toggle": false}
+```
+
+Using retained messages for `dersimn/SonoffS20/ABC123/set/config` will reload the configuration on boot.
+
 ## Flash
 
 Clone this repository, `cd` into it. Connect wires to the Sonoff S20 (I've been using a [FT2232 breakout board](http://dangerousprototypes.com/docs/FT2232_breakout_board)). Flash using [PlatformIO CLI](https://docs.platformio.org/en/latest/installation.html).  
