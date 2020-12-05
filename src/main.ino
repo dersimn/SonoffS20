@@ -285,6 +285,8 @@ void mqttReconnect() {
 
     // Post current state
     val_pub();
+    led_pub();
+    conf_pub();
   } else {
     LogMqtt.error(s+"Connection failed with rc="+mqttClient.state());
     digitalWrite(STATUS_LED_PIN, LOW);
