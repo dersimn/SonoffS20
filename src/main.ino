@@ -42,6 +42,7 @@ Thread threadUptime = Thread();
 Thread threadState = Thread();
 ThreadRunOnce threadMqttRunOnce = ThreadRunOnce();
 
+bool buttonToggle = true;
 bool isButtonPressed;
 long lastUpdateMillis;
 
@@ -174,6 +175,25 @@ void setup() {
     }
   });
 
+  mqtt.subscribe(s+MQTT_PREFIX+"/set/config", [](String topic, String message){
+    StaticJsonDocument<500> doc;
+    auto error = deserializeJson(doc, message);
+    if (error) {
+      Log.error(s+"deserializeJson() failed with code "+error.c_str());
+      return;
+    }
+
+    if ( doc.is<JsonObject>() ) {
+      JsonObject rootObject = doc.as<JsonObject>();
+
+      if ( rootObject.containsKey("button-toggle") ) {
+        buttonToggle = rootObject["button-toggle"].as<bool>();
+      }
+
+      conf_pub();
+    }
+  });
+
   threadState.onRun([](){
     val_pub();
     led_pub();
@@ -191,12 +211,32 @@ void loop() {
   mqttClient.loop();
 
   if (isButtonPressed) {
-    digitalWrite(RELAIS_PIN, !digitalRead(RELAIS_PIN));
-    val_pub();
+    btn_pub();
+
+    if (buttonToggle) {
+      digitalWrite(RELAIS_PIN, !digitalRead(RELAIS_PIN));
+      val_pub();
+    }
     
     isButtonPressed = false;
     lastUpdateMillis = millis();
   }
+}
+
+void btn_pub() {
+  StaticJsonDocument<500> doc;
+  
+  doc["val"] = true;
+
+  mqtt.publish(s+MQTT_PREFIX+"/status/button", doc.as<String>());
+}
+
+void conf_pub() {
+  StaticJsonDocument<500> doc;
+  
+  doc["button-toggle"] = buttonToggle;
+
+  mqtt.publish(s+MQTT_PREFIX+"/status/config", doc.as<String>(), true);
 }
 
 void led_set(bool newState) {
