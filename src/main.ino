@@ -134,7 +134,7 @@ void setup() {
   threadControl.add(&threadUptime);
 
   // -------------------------- App --------------------------
-  mqtt.subscribe(s+MQTT_PREFIX+"/set", [](String topic, String message){
+  mqtt.subscribe(s+MQTT_PREFIX+"/set/onoff", [](String topic, String message){
     StaticJsonDocument<500> doc;
     auto error = deserializeJson(doc, message);
     if (error) {
@@ -154,8 +154,29 @@ void setup() {
     }
   });
 
+  mqtt.subscribe(s+MQTT_PREFIX+"/set/led", [](String topic, String message){
+    StaticJsonDocument<500> doc;
+    auto error = deserializeJson(doc, message);
+    if (error) {
+      Log.error(s+"deserializeJson() failed with code "+error.c_str());
+      return;
+    }
+
+    if ( doc.is<bool>() ) {
+      led_set( doc.as<bool>() );
+      return;
+    }
+    if ( doc.is<JsonObject>() ) {
+      JsonObject rootObject = doc.as<JsonObject>();
+      if ( rootObject.containsKey("val") ) {
+        led_set( rootObject["val"].as<bool>() );
+      }
+    }
+  });
+
   threadState.onRun([](){
     val_pub();
+    led_pub();
   });
   threadState.setInterval(MAINTENANCE_INTERVAL);
   threadControl.add(&threadState);
@@ -178,6 +199,18 @@ void loop() {
   }
 }
 
+void led_set(bool newState) {
+  digitalWrite(STATUS_LED_PIN, newState);
+  led_pub();
+}
+void led_pub() {
+  StaticJsonDocument<500> doc;
+  
+  doc["val"] = (bool)digitalRead(STATUS_LED_PIN);
+
+  mqtt.publish(s+MQTT_PREFIX+"/status/led", doc.as<String>(), true);
+}
+
 void val_set(bool newState) {
   digitalWrite(RELAIS_PIN, newState);
   val_pub();
@@ -187,7 +220,7 @@ void val_pub() {
   
   doc["val"] = (bool)digitalRead(RELAIS_PIN);
 
-  mqtt.publish(s+MQTT_PREFIX+"/status", doc.as<String>(), true);
+  mqtt.publish(s+MQTT_PREFIX+"/status/onoff", doc.as<String>(), true);
 }
 
 void mqttReconnect() {
