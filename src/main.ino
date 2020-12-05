@@ -226,7 +226,7 @@ void loop() {
 void btn_pub() {
   StaticJsonDocument<500> doc;
   
-  doc["val"] = true;
+  doc["action"] = "release"; // Button pin is inverted, we detect only releasing the button for now
 
   mqtt.publish(s+MQTT_PREFIX+"/status/button", doc.as<String>());
 }
@@ -240,13 +240,13 @@ void conf_pub() {
 }
 
 void led_set(bool newState) {
-  digitalWrite(STATUS_LED_PIN, newState);
+  digitalWrite(STATUS_LED_PIN, !newState);
   led_pub();
 }
 void led_pub() {
   StaticJsonDocument<500> doc;
   
-  doc["val"] = (bool)digitalRead(STATUS_LED_PIN);
+  doc["val"] = !(bool)digitalRead(STATUS_LED_PIN);
 
   mqtt.publish(s+MQTT_PREFIX+"/status/led", doc.as<String>(), true);
 }
