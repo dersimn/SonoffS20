@@ -3,7 +3,7 @@
 #define WIFI_PASS       ""
 
 // Maintenance
-#define MAINTENANCE_INTERVAL            60*1000
+#define MAINTENANCE_INTERVAL    (60*1000)
 
 // Sonoff
 #define RELAIS_PIN 12
