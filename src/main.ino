@@ -272,16 +272,28 @@ void mqttReconnect() {
 
     mqtt.publish(s+MQTT_PREFIX+"/online", "true", true);
 
-    // Post static info once every (re)connect
+    // Post static Info Data once every (Re)connect
+    // Info
     StaticJsonDocument<500> doc;
 
-    doc["board_id"] = BOARD_ID;
-    doc["build_hash"] = GIT_HASH;
-    doc["build_tag"] = GIT_TAG_OR_BRANCH;
-    doc["build_timestamp"] = BUILD_TIMESTAMP;
-    doc["ip_address"] = WiFi.localIP().toString();
+    JsonObject board  = doc.createNestedObject("board");
+    board["board-id"] = BOARD_ID;
+    board["ip-address"] = WiFi.localIP().toString();
+    board["wifi-ssid"] = WiFi.SSID();
 
+    JsonObject build  = doc.createNestedObject("build");
+    build["git-hash"] = GIT_HASH;
+    build["git-tag"] = GIT_TAG_OR_BRANCH;
+    build["build-timestamp"] = BUILD_TIMESTAMP;
+    
     mqtt.publish(s+MQTT_PREFIX+"/maintenance/info", doc.as<String>(), true);
+
+    // Config
+    doc.clear();
+    JsonObject maintenance  = doc.createNestedObject("maintenance");
+    maintenance["interval"] = MAINTENANCE_INTERVAL;
+
+    mqtt.publish(s+MQTT_PREFIX+"/maintenance/config", doc.as<String>(), true);
 
     // Post current state
     val_pub();
